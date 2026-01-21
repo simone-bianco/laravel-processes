@@ -2,6 +2,7 @@
 
 namespace SimoneBianco\LaravelProcesses\Models\Traits;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use SimoneBianco\LaravelProcesses\Enums\ProcessStatus;
@@ -59,6 +60,12 @@ trait HasProcesses
         return $this;
     }
 
+    /**
+     * @param string $type
+     * @param array $initialLog
+     * @param array $initialContext
+     * @return Process|Model
+     */
     public function startProcess(string $type = 'default', array $initialLog = [], array $initialContext = []): Process
     {
         $process = $this->processes()->create([

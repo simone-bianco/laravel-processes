@@ -4,7 +4,9 @@ namespace SimoneBianco\LaravelProcesses\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\Context;
 use SimoneBianco\LaravelProcesses\Casts\ProcessLogCast;
+use SimoneBianco\LaravelProcesses\Enums\ProcessStatus;
 
 class Process extends Model
 {
@@ -51,8 +53,11 @@ class Process extends Model
 
     public function log(string $method, string $content, array $context = []): self
     {
+        $globalContext = Context::all();
+        if (!empty($globalContext)) {
+            $context = [$globalContext, $context];
+        }
         $this->log->{$method}($content, $context);
-        $this->log = $this->log;
         $this->save();
 
         return $this;
@@ -75,7 +80,7 @@ class Process extends Model
 
     public function setStatus(
         string $method,
-        \SimoneBianco\LaravelProcesses\Enums\ProcessStatus $status,
+        ProcessStatus $status,
         ?string $logContext = null,
         array $context = []
     ): self {
@@ -83,7 +88,6 @@ class Process extends Model
 
         if ($logContext) {
             $this->log->{$method}($logContext, $context);
-            $this->log = $this->log;
         }
 
         $this->save();
@@ -93,21 +97,21 @@ class Process extends Model
 
     public function setComplete(?string $logContent = null, array $context = []): self
     {
-        return $this->setStatus('info', \SimoneBianco\LaravelProcesses\Enums\ProcessStatus::COMPLETE, $logContent, $context);
+        return $this->setStatus('info', ProcessStatus::COMPLETE, $logContent, $context);
     }
 
     public function setError(?string $logContent = null, array $context = []): self
     {
-        return $this->setStatus('error', \SimoneBianco\LaravelProcesses\Enums\ProcessStatus::ERROR, $logContent, $context);
+        return $this->setStatus('error', ProcessStatus::ERROR, $logContent, $context);
     }
 
     public function setPending(?string $logContent = null, array $context = []): self
     {
-        return $this->setStatus('info', \SimoneBianco\LaravelProcesses\Enums\ProcessStatus::PENDING, $logContent, $context);
+        return $this->setStatus('info', ProcessStatus::PENDING, $logContent, $context);
     }
 
     public function setProcessing(?string $logContent = null, array $context = []): self
     {
-        return $this->setStatus('info', \SimoneBianco\LaravelProcesses\Enums\ProcessStatus::PROCESSING, $logContent, $context);
+        return $this->setStatus('info', ProcessStatus::PROCESSING, $logContent, $context);
     }
 }
