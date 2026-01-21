@@ -47,10 +47,6 @@ trait HasProcesses
             ->first();
     }
 
-
-
-
-
     public function cleanOldProcesses(int $retentionDays = 7): self
     {
         $this->processes()
@@ -61,17 +57,13 @@ trait HasProcesses
     }
 
     /**
-     * @param string $type
-     * @param array $initialLog
-     * @param array $initialContext
      * @return Process|Model
      */
-    public function startProcess(string $type = 'default', array $initialLog = [], array $initialContext = []): Process
+    public function startProcess(string $type = 'default', array $initialContext = []): Process
     {
         $process = $this->processes()->create([
-            'type'    => $type,
-            'status'  => ProcessStatus::PENDING,
-            'log'     => $initialLog,
+            'type' => $type,
+            'status' => ProcessStatus::PENDING,
             'context' => $initialContext,
         ]);
 

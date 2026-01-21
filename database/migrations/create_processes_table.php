@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('status', 50)->default('pending');
             $table->string('type');
             $table->text('error')->nullable();
-            $table->json('log')->nullable();
+
             $table->json('context')->nullable();
 
             $table->timestamps();
