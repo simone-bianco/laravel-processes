@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use SimoneBianco\LaravelProcesses\Enums\ProcessStatus;
 
+/**
+ * @property array $context
+ * @property ProcessStatus $status
+ */
 class Process extends Model
 {
     protected $fillable = [
@@ -18,6 +22,7 @@ class Process extends Model
     ];
 
     protected $casts = [
+        'status' => ProcessStatus::class,
         'context' => 'array',
     ];
 
@@ -40,9 +45,25 @@ class Process extends Model
         return $this;
     }
 
+    public function setContextAndSave(string $key, mixed $value): self
+    {
+        $this->setContext($key, $value);
+        $this->save();
+
+        return $this;
+    }
+
     public function mergeContext(array $values): self
     {
         $this->context = array_merge($this->context ?? [], $values);
+
+        return $this;
+    }
+
+    public function mergeContextAndSave(array $values): self
+    {
+        $this->mergeContext($values);
+        $this->save();
 
         return $this;
     }
@@ -52,6 +73,11 @@ class Process extends Model
         array $context = []
     ): self {
         $this->status = $status;
+
+        if (! empty($context)) {
+            $this->mergeContext($context);
+        }
+
         $this->save();
 
         return $this;
