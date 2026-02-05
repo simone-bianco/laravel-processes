@@ -2,9 +2,9 @@
 
 namespace SimoneBianco\LaravelProcesses;
 
+use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Spatie\LaravelPackageTools\Commands\InstallCommand;
 
 class LaravelProcessesServiceProvider extends PackageServiceProvider
 {
@@ -15,7 +15,7 @@ class LaravelProcessesServiceProvider extends PackageServiceProvider
             ->hasMigrations([
                 'create_processes_table',
             ])
-            ->hasInstallCommand(function(InstallCommand $command) {
+            ->hasInstallCommand(function (InstallCommand $command) {
                 $command
                     ->publishMigrations()
                     ->askToRunMigrations()
