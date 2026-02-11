@@ -15,6 +15,16 @@ trait HasProcesses
         return $this->morphMany(Process::class, 'processable');
     }
 
+    public function activeProcesses(): MorphMany
+    {
+        return $this->processes()->whereIn('status', [ProcessStatus::PENDING, ProcessStatus::PROCESSING]);
+    }
+
+    public function hasActiveProcesses(): bool
+    {
+        return $this->activeProcesses()->exists();
+    }
+
     public function latestProcess(): MorphOne
     {
         return $this->morphOne(Process::class, 'processable')->latestOfMany();
