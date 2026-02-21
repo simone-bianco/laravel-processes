@@ -11,7 +11,9 @@ return new class extends Migration
         Schema::create('processes', function (Blueprint $table) {
             $table->id();
 
-            $table->uuidMorphs('processable');
+            $table->string('processable_type');
+            $table->string('processable_id');
+            $table->index(['processable_type', 'processable_id']);
 
             $table->string('status', 50)->default('pending');
             $table->string('type');

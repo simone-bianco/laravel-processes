@@ -6,6 +6,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Support\Str;
 use SimoneBianco\LaravelProcesses\Models\Process;
 
 class ProcessStatusUpdated implements ShouldBroadcastNow
@@ -23,7 +24,8 @@ class ProcessStatusUpdated implements ShouldBroadcastNow
 
     public function broadcastOn(): PrivateChannel
     {
-        return new PrivateChannel("document.{$this->process->processable_id}");
+        $type = Str::snake(class_basename($this->process->processable_type));
+        return new PrivateChannel("{$type}.{$this->process->processable_id}");
     }
 
     public function broadcastWith(): array
@@ -37,6 +39,8 @@ class ProcessStatusUpdated implements ShouldBroadcastNow
                 'status' => $this->process->status->value,
                 'error' => $this->process->error,
                 'context' => array_intersect_key($context, array_flip(['phase'])),
+                'processable_type' => class_basename($this->process->processable_type),
+                'processable_id' => $this->process->processable_id,
                 'created_at' => $this->process->created_at?->toISOString(),
                 'updated_at' => $this->process->updated_at?->toISOString(),
             ],
