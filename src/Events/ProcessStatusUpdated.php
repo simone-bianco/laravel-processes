@@ -4,12 +4,12 @@ namespace SimoneBianco\LaravelProcesses\Events;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Support\Str;
 use SimoneBianco\LaravelProcesses\Models\Process;
 
-class ProcessStatusUpdated implements ShouldBroadcastNow
+class ProcessStatusUpdated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets;
 
