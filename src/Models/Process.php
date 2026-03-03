@@ -4,6 +4,7 @@ namespace SimoneBianco\LaravelProcesses\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\Cache;
 use SimoneBianco\LaravelProcesses\Enums\ProcessStatus;
 
 /**
@@ -105,5 +106,20 @@ class Process extends Model
     public function setProcessing(array $context = []): self
     {
         return $this->setStatus(ProcessStatus::PROCESSING, $context);
+    }
+
+    public function signalStop(): void
+    {
+        Cache::put("process.stop.{$this->id}", true, now()->addHour());
+    }
+
+    public function clearStopSignal(): void
+    {
+        Cache::forget("process.stop.{$this->id}");
+    }
+
+    public function isStopSignaled(): bool
+    {
+        return Cache::has("process.stop.{$this->id}");
     }
 }
